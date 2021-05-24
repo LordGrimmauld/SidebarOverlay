@@ -1,0 +1,7 @@
+{
+  "sidebaroverlay.overlay.main": "Main Menu",
+  "sidebaroverlay.keybind.menu": "Open Menu",
+  "sidebaroverlay.keybind.select_tool": "Select Tool",
+  "sidebaroverlay.keybind.activate_tool": "Activate Tool",
+  "sidebaroverlay.keybind.config": "Configure Tool"
+}

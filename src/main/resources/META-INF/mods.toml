@@ -1,0 +1,22 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="MIT"
+[[mods]]
+modId="sidebaroverlay"
+version="${file.jarVersion}"
+displayName="Example Mod"
+authors="Grimmauld"
+description='''
+This is a utility mod to display a sidebar gui'''
+[[dependencies.sidebaroverlay]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="CLIENT"
+[[dependencies.sidebaroverlay]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="CLIENT"
