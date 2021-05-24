@@ -4,7 +4,7 @@ license="MIT"
 [[mods]]
 modId="sidebaroverlay"
 version="${file.jarVersion}"
-displayName="Example Mod"
+displayName="Sidebar Overlay"
 authors="Grimmauld"
 description='''
 This is a utility mod to display a sidebar gui'''
