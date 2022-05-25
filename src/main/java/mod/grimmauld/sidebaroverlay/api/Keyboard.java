@@ -26,7 +26,7 @@ public enum Keyboard {
 	}
 
 	public static boolean isKeyDown(int key) {
-		return InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), key);
+		return InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key);
 	}
 
 	public boolean isKeyDown() {

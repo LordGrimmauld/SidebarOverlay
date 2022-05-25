@@ -36,7 +36,7 @@ public class SelectItem {
 	}
 
 	public IFormattableTextComponent getDescription() {
-		return description.deepCopy().mergeStyle(TextFormatting.WHITE);
+		return description.copy().withStyle(TextFormatting.WHITE);
 	}
 
 	public void onScroll(InputEvent.MouseScrollEvent event) {

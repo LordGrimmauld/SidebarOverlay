@@ -30,14 +30,14 @@ public abstract class Outline {
 	public void renderCuboidLine(MatrixStack ms, SuperRenderTypeBuffer buffer, Vector3d start, Vector3d end) {
 		Vector3d diff = end.subtract(start);
 		float hAngle = AngleHelper.deg(MathHelper.atan2(diff.x, diff.z));
-		float hDistance = (float) diff.mul(1.0D, 0.0D, 1.0D).length();
+		float hDistance = (float) diff.multiply(1.0D, 0.0D, 1.0D).length();
 		float vAngle = AngleHelper.deg(MathHelper.atan2(hDistance, diff.y)) - 90.0F;
-		ms.push();
+		ms.pushPose();
 		ms.translate(start.x, start.y, start.z);
-		ms.rotate(Vector3f.YP.rotationDegrees(hAngle));
-		ms.rotate(Vector3f.XP.rotationDegrees(vAngle));
+		ms.mulPose(Vector3f.YP.rotationDegrees(hAngle));
+		ms.mulPose(Vector3f.XP.rotationDegrees(vAngle));
 		this.renderAACuboidLine(ms, buffer, Vector3d.ZERO, new Vector3d(0.0D, 0.0D, diff.length()));
-		ms.pop();
+		ms.popPose();
 	}
 
 	public void renderAACuboidLine(MatrixStack ms, SuperRenderTypeBuffer buffer, Vector3d start, Vector3d end) {
@@ -55,7 +55,7 @@ public abstract class Outline {
 
 			extension = diff.normalize().scale(lineWidth / 2.0F);
 			Vector3d plane = VecHelper.axisAlingedPlaneOf(diff);
-			Direction face = Direction.getFacingFromVector(diff.x, diff.y, diff.z);
+			Direction face = Direction.getNearest(diff.x, diff.y, diff.z);
 			Direction.Axis axis = face.getAxis();
 			start = start.subtract(extension);
 			end = end.add(extension);
@@ -82,16 +82,16 @@ public abstract class Outline {
 				this.putQuad(ms, builder, b4, b3, b2, b1, face);
 				this.putQuad(ms, builder, a1, a2, a3, a4, face.getOpposite());
 				Vector3d vec = a1.subtract(a4);
-				face = Direction.getFacingFromVector(vec.x, vec.y, vec.z);
+				face = Direction.getNearest(vec.x, vec.y, vec.z);
 				this.putQuad(ms, builder, a1, b1, b2, a2, face);
 				vec = VecHelper.rotate(vec, -90.0D, axis);
-				face = Direction.getFacingFromVector(vec.x, vec.y, vec.z);
+				face = Direction.getNearest(vec.x, vec.y, vec.z);
 				this.putQuad(ms, builder, a2, b2, b3, a3, face);
 				vec = VecHelper.rotate(vec, -90.0D, axis);
-				face = Direction.getFacingFromVector(vec.x, vec.y, vec.z);
+				face = Direction.getNearest(vec.x, vec.y, vec.z);
 				this.putQuad(ms, builder, a3, b3, b4, a4, face);
 				vec = VecHelper.rotate(vec, -90.0D, axis);
-				face = Direction.getFacingFromVector(vec.x, vec.y, vec.z);
+				face = Direction.getNearest(vec.x, vec.y, vec.z);
 			}
 			this.putQuad(ms, builder, a4, b4, b1, a1, face);
 		}
@@ -112,22 +112,22 @@ public abstract class Outline {
 		int i = 15728880;
 		int j = i >> 16 & '\uffff';
 		int k = i & '\uffff';
-		MatrixStack.Entry peek = ms.getLast();
+		MatrixStack.Entry peek = ms.last();
 		Vector3d rgb = this.params.rgb;
 		if (this.transformNormals == null) {
-			this.transformNormals = peek.getNormal();
+			this.transformNormals = peek.normal();
 		}
 
 		int xOffset = 0;
 		int yOffset = 0;
 		int zOffset = 0;
 		if (normal != null) {
-			xOffset = normal.getXOffset();
-			yOffset = normal.getYOffset();
-			zOffset = normal.getZOffset();
+			xOffset = normal.getStepX();
+			yOffset = normal.getStepY();
+			zOffset = normal.getStepZ();
 		}
 
-		builder.pos(peek.getMatrix(), (float) pos.x, (float) pos.y, (float) pos.z).color((float) rgb.x, (float) rgb.y, (float) rgb.z, this.params.alpha).tex(u, v).overlay(OverlayTexture.NO_OVERLAY).lightmap(j, k).normal(peek.getNormal(), (float) xOffset, (float) yOffset, (float) zOffset).endVertex();
+		builder.vertex(peek.pose(), (float) pos.x, (float) pos.y, (float) pos.z).color((float) rgb.x, (float) rgb.y, (float) rgb.z, this.params.alpha).uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(j, k).normal(peek.normal(), (float) xOffset, (float) yOffset, (float) zOffset).endVertex();
 		this.transformNormals = null;
 	}
 

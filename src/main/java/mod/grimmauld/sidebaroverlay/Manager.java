@@ -113,14 +113,14 @@ public class Manager {
 
 	@SubscribeEvent
 	public static void onMouseScrolled(InputEvent.MouseScrollEvent event) {
-		if (Minecraft.getInstance().currentScreen != null)
+		if (Minecraft.getInstance().screen != null)
 			return;
 		overlays.stream().filter(SelectOverlay::isVisible).forEach(overlay -> overlay.onScroll(event));
 	}
 
 	@SubscribeEvent
 	public static void onMouseInput(InputEvent.MouseInputEvent event) {
-		if (Minecraft.getInstance().currentScreen != null)
+		if (Minecraft.getInstance().screen != null)
 			return;
 
 		int button = event.getButton();
@@ -130,8 +130,8 @@ public class Manager {
 			return;
 
 		Minecraft mc = Minecraft.getInstance();
-		if (button == mc.gameSettings.keyBindUseItem.getKey().getKeyCode()) {
-			if (mc.world == null || mc.player == null || mc.player.isSneaking())
+		if (button == mc.options.keyUse.getKey().getValue()) {
+			if (mc.level == null || mc.player == null || mc.player.isShiftKeyDown())
 				return;
 			getActiveOverlay().flatMap(SelectOverlay::getActiveSelectItem).ifPresent(selectItem -> selectItem.onRightClick(event));
 		}
@@ -145,15 +145,15 @@ public class Manager {
 	@SubscribeEvent
 	public static void onRenderWorld(RenderWorldLastEvent event) {
 		MatrixStack ms = event.getMatrixStack();
-		ActiveRenderInfo info = Minecraft.getInstance().gameRenderer.getActiveRenderInfo();
-		Vector3d view = info.getProjectedView();
-		ms.push();
-		ms.translate(-view.getX(), -view.getY(), -view.getZ());
+		ActiveRenderInfo info = Minecraft.getInstance().gameRenderer.getMainCamera();
+		Vector3d view = info.getPosition();
+		ms.pushPose();
+		ms.translate(-view.x(), -view.y(), -view.z());
 		SuperRenderTypeBuffer buffer = SuperRenderTypeBuffer.getInstance();
 		Manager.getActiveOverlay().ifPresent(overlay -> overlay.options.forEach(selectItem -> selectItem.continuousRendering(ms, buffer)));
 		Manager.getActiveOverlay().flatMap(SelectOverlay::getActiveSelectItem).ifPresent(selectItem -> selectItem.renderActive(ms, buffer));
 		buffer.draw();
 
-		ms.pop();
+		ms.popPose();
 	}
 }

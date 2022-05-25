@@ -97,7 +97,7 @@ public class SelectOverlay {
 	}
 
 	public void open(@Nullable SelectOverlay previous) {
-		if (MC.currentScreen != null)
+		if (MC.screen != null)
 			return;
 		this.previous = previous;
 		if (previous != null)
@@ -113,18 +113,18 @@ public class SelectOverlay {
 	}
 
 	private void draw(MatrixStack ms, float partialTicks) {
-		MainWindow window = MC.getMainWindow();
+		MainWindow window = MC.getWindow();
 
-		int x = window.getScaledWidth() - menuWidth - 10;
-		int y = window.getScaledHeight() - menuHeight;
+		int x = window.getGuiScaledWidth() - menuWidth - 10;
+		int y = window.getGuiScaledHeight() - menuHeight;
 
 		boolean sideways = false;
-		if ((window.getScaledWidth() - 182) / 2 < menuWidth + 20) {
+		if ((window.getGuiScaledWidth() - 182) / 2 < menuWidth + 20) {
 			sideways = true;
 			y -= 24;
 		}
 
-		ms.push();
+		ms.pushPose();
 		float shift = yShift(partialTicks);
 		float sidewaysShift = shift * ((float) menuWidth / (float) menuHeight) + (40 + menuHeight / 4f)
 			+ 8;
@@ -134,35 +134,35 @@ public class SelectOverlay {
 		RenderSystem.enableBlend();
 		RenderSystem.color4f(1, 1, 1, 3 / 4f);
 
-		MC.getTextureManager().bindTexture(ExtraTextures.GRAY.getLocation());
+		MC.getTextureManager().bind(ExtraTextures.GRAY.getLocation());
 		blit(ms, x, y, 0, 0, menuWidth, menuHeight, 16, 16);
 		RenderSystem.color4f(1, 1, 1, 1);
 
 		int yPos = y + 4;
 		int xPos = x + 4;
 
-		FontRenderer font = MC.fontRenderer;
+		FontRenderer font = MC.font;
 
 		// TODO add Keybinds
 
-		font.func_243246_a(ms, title, xPos, yPos, 0xEEEEEE);
+		font.drawShadow(ms, title, xPos, yPos, 0xEEEEEE);
 
 		yPos += 4;
 
 		// TODO: Add entry Keybinds
 
 		yPos += 4;
-		yPos += font.FONT_HEIGHT;
+		yPos += font.lineHeight;
 
 		for (int i = 0; i < options.size(); i++) {
 			IFormattableTextComponent desc = options.get(i).getDescription();
 			if (i == selectedOptionIndex)
-				desc.mergeStyle(TextFormatting.UNDERLINE, TextFormatting.ITALIC);
-			font.func_243248_b(ms, desc, xPos, yPos, menuWidth - 8);
-			yPos += font.FONT_HEIGHT + 2;
+				desc.withStyle(TextFormatting.UNDERLINE, TextFormatting.ITALIC);
+			font.draw(ms, desc, xPos, yPos, menuWidth - 8);
+			yPos += font.lineHeight + 2;
 		}
 
-		ms.pop();
+		ms.popPose();
 	}
 
 	private float yShift(float partialTicks) {
@@ -184,7 +184,7 @@ public class SelectOverlay {
 	}
 
 	public void updateContents() {
-		int fontheight = MC.fontRenderer.FONT_HEIGHT;
+		int fontheight = MC.font.lineHeight;
 
 		this.menuWidth = 158;
 		this.menuHeight = 4;
@@ -239,10 +239,10 @@ public class SelectOverlay {
 
 	public void onScroll(InputEvent.MouseScrollEvent event) {
 		int amount = (int) Math.signum(event.getScrollDelta());
-		if (TOOL_SELECT.isKeyDown()) {
+		if (TOOL_SELECT.isDown()) {
 			this.advanceSelectionIndex(amount);
 			event.setCanceled(true);
-		} else if (TOOL_CONFIG.isKeyDown()) {
+		} else if (TOOL_CONFIG.isDown()) {
 			getActiveSelectConfig().ifPresent(selectConfig -> {
 				selectConfig.onScrolled(amount);
 				event.setCanceled(true);

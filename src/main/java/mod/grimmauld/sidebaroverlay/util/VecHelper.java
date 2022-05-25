@@ -31,7 +31,7 @@ public class VecHelper {
 	}
 
 	public static Vector3d getCenterOf(Vector3i pos) {
-		return pos.equals(Vector3i.NULL_VECTOR) ? CENTER_OF_ORIGIN : Vector3d.copy(pos).add(0.5D, 0.5D, 0.5D);
+		return pos.equals(Vector3i.ZERO) ? CENTER_OF_ORIGIN : Vector3d.atLowerCornerOf(pos).add(0.5D, 0.5D, 0.5D);
 	}
 
 	public static Vector3d axisAlingedPlaneOf(Vector3d vec) {

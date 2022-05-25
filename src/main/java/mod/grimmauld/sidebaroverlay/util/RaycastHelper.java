@@ -17,12 +17,12 @@ public class RaycastHelper {
 		Vector3d origin = getTraceOrigin(playerIn);
 		Vector3d target = getTraceTarget(playerIn, range, origin);
 		RayTraceContext context = new RayTraceContext(origin, target, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, playerIn);
-		return worldIn.rayTraceBlocks(context);
+		return worldIn.clip(context);
 	}
 
 	public static Vector3d getTraceTarget(PlayerEntity playerIn, double range, Vector3d origin) {
-		float f = playerIn.rotationPitch;
-		float f1 = playerIn.rotationYaw;
+		float f = playerIn.xRot;
+		float f1 = playerIn.yRot;
 		float f2 = MathHelper.cos(-f1 * 0.017453292F - 3.1415927F);
 		float f3 = MathHelper.sin(-f1 * 0.017453292F - 3.1415927F);
 		float f4 = -MathHelper.cos(-f * 0.017453292F);
@@ -33,9 +33,9 @@ public class RaycastHelper {
 	}
 
 	public static Vector3d getTraceOrigin(PlayerEntity playerIn) {
-		double d0 = playerIn.getPosX();
-		double d1 = playerIn.getPosY() + (double) playerIn.getEyeHeight();
-		double d2 = playerIn.getPosZ();
+		double d0 = playerIn.getX();
+		double d1 = playerIn.getY() + (double) playerIn.getEyeHeight();
+		double d2 = playerIn.getZ();
 		return new Vector3d(d0, d1, d2);
 	}
 
@@ -50,7 +50,7 @@ public class RaycastHelper {
 				int z = MathHelper.floor(start.z);
 				BlockPos currentPos = new BlockPos(x, y, z);
 				if (predicate.test(currentPos)) {
-					return new PredicateTraceResult(currentPos, Direction.getFacingFromVector((float) (dx - x), (float) (dy - y), (float) (dz - z)));
+					return new PredicateTraceResult(currentPos, Direction.getNearest((float) (dx - x), (float) (dy - y), (float) (dz - z)));
 				} else {
 					int var10 = 200;
 
@@ -157,16 +157,16 @@ public class RaycastHelper {
 
 	@Nullable
 	public static BlockPos getFocusedPosition() {
-		if (MC.player == null || MC.world == null)
+		if (MC.player == null || MC.level == null)
 			return null;
 
-		BlockRayTraceResult trace = RaycastHelper.rayTraceRange(MC.world, MC.player, 75);
+		BlockRayTraceResult trace = RaycastHelper.rayTraceRange(MC.level, MC.player, 75);
 		if (trace.getType() != RayTraceResult.Type.BLOCK)
 			return null;
 
-		BlockPos hit = new BlockPos(trace.getHitVec());
-		if (MC.world.getBlockState(hit).getMaterial().isReplaceable())
-			hit = hit.offset(trace.getFace().getOpposite());
+		BlockPos hit = new BlockPos(trace.getLocation());
+		if (MC.level.getBlockState(hit).getMaterial().isReplaceable())
+			hit = hit.relative(trace.getDirection().getOpposite());
 		return hit;
 	}
 

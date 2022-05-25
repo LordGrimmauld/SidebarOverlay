@@ -23,9 +23,9 @@ public class AABBOutline extends Outline {
 	}
 
 	public void renderBB(MatrixStack ms, SuperRenderTypeBuffer buffer, AxisAlignedBB bb) {
-		Vector3d projectedView = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
+		Vector3d projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
 		boolean noCull = bb.contains(projectedView);
-		bb = bb.grow(noCull ? -0.0078125D : 0.0078125D);
+		bb = bb.inflate(noCull ? -0.0078125D : 0.0078125D);
 		noCull |= this.params.disableCull;
 		Vector3d xyz = new Vector3d(bb.minX, bb.minY, bb.minZ);
 		Vector3d Xyz = new Vector3d(bb.maxX, bb.minY, bb.minZ);

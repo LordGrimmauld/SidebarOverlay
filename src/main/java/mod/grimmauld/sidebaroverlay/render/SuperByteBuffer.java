@@ -18,12 +18,12 @@ public class SuperByteBuffer {
 	private MatrixStack transforms;
 
 	public SuperByteBuffer(BufferBuilder buf) {
-		Pair<BufferBuilder.DrawState, ByteBuffer> state = buf.getNextBuffer();
+		Pair<BufferBuilder.DrawState, ByteBuffer> state = buf.popNextBuffer();
 		ByteBuffer rendered = state.getSecond();
 		rendered.order(ByteOrder.nativeOrder());
-		this.formatSize = buf.getVertexFormat().getSize();
-		int size = state.getFirst().getVertexCount() * this.formatSize;
-		this.template = GLAllocation.createDirectByteBuffer(size);
+		this.formatSize = buf.getVertexFormat().getVertexSize();
+		int size = state.getFirst().vertexCount() * this.formatSize;
+		this.template = GLAllocation.createByteBuffer(size);
 		this.template.order(rendered.order());
 		this.template.limit(rendered.limit());
 		this.template.put(rendered);
@@ -35,9 +35,9 @@ public class SuperByteBuffer {
 		ByteBuffer buffer = this.template;
 		if (buffer.limit() != 0) {
 			buffer.rewind();
-			Matrix4f t = input.getLast().getMatrix().copy();
-			Matrix4f localTransforms = this.transforms.getLast().getMatrix();
-			t.mul(localTransforms);
+			Matrix4f t = input.last().pose().copy();
+			Matrix4f localTransforms = this.transforms.last().pose();
+			t.multiply(localTransforms);
 
 			int vertexCount = this.vertexCount(buffer);
 
@@ -51,14 +51,14 @@ public class SuperByteBuffer {
 				byte a = this.getA(buffer, i);
 				this.pos.set(x, y, z, 1.0F);
 				this.pos.transform(t);
-				builder.pos(this.pos.getX(), this.pos.getY(), this.pos.getZ());
+				builder.vertex(this.pos.x(), this.pos.y(), this.pos.z());
 				builder.color(r, g, b, a);
 
 				float u = this.getU(buffer, i);
 				float v = this.getV(buffer, i);
-				builder.tex(u, v);
+				builder.uv(u, v);
 
-				builder.lightmap(this.getLight(buffer, i));
+				builder.uv2(this.getLight(buffer, i));
 
 				builder.normal(this.getNX(buffer, i), this.getNY(buffer, i), this.getNZ(buffer, i)).endVertex();
 			}

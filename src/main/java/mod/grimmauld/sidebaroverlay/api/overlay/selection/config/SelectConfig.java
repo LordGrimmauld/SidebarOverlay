@@ -26,7 +26,7 @@ public abstract class SelectConfig<T extends Comparable<? super T>> extends Sele
 
 	@Override
 	public IFormattableTextComponent getDescription() {
-		return super.getDescription().appendString(": ").append(this.getState());
+		return super.getDescription().append(": ").append(this.getState());
 	}
 
 	protected ITextComponent getState() {

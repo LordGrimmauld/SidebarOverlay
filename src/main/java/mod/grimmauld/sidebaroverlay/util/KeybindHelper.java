@@ -16,11 +16,11 @@ public class KeybindHelper {
 			return false;
 		if (event instanceof InputEvent.KeyInputEvent) {
 			InputEvent.KeyInputEvent keyEvent = ((InputEvent.KeyInputEvent) event);
-			return key.isActiveAndMatches(InputMappings.getInputByCode(keyEvent.getKey(), keyEvent.getScanCode()));
+			return key.isActiveAndMatches(InputMappings.getKey(keyEvent.getKey(), keyEvent.getScanCode()));
 		}
 		if (event instanceof InputEvent.MouseInputEvent) {
 			InputEvent.MouseInputEvent mouseEvent = ((InputEvent.MouseInputEvent) event);
-			return key.matchesMouseKey(mouseEvent.getButton());
+			return key.matchesMouse(mouseEvent.getButton());
 		}
 		return false;
 	}

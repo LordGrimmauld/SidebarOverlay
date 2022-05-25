@@ -48,7 +48,7 @@ public class BlockPosSelectConfig extends SelectConfig<BlockPos> {
 
 	@Override
 	protected ITextComponent getState() {
-		return new StringTextComponent(pos == null ? "undefined" : pos.getX() + " " + pos.getY() + " " + pos.getZ()).mergeStyle(color);
+		return new StringTextComponent(pos == null ? "undefined" : pos.getX() + " " + pos.getY() + " " + pos.getZ()).withStyle(color);
 	}
 
 	@Override
