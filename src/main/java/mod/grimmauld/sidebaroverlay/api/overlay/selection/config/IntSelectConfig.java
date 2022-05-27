@@ -1,6 +1,6 @@
 package mod.grimmauld.sidebaroverlay.api.overlay.selection.config;
 
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.Mth;
 import net.minecraft.network.chat.Component;
 

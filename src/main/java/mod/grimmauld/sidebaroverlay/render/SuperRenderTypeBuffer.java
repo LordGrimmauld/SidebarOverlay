@@ -3,7 +3,7 @@ package mod.grimmauld.sidebaroverlay.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.util.LazyLoadedValue;
@@ -56,7 +56,7 @@ public class SuperRenderTypeBuffer implements MultiBufferSource {
 		static SortedMap<RenderType, BufferBuilder> createEntityBuilders() {
 			return Util.make(new Object2ObjectLinkedOpenHashMap<>(), (map) -> {
 				map.put(Sheets.solidBlockSheet(), blockBuilders.builder(RenderType.solid()));
-				assign(map, RenderTypes.getOutlineSolid());
+				assign(map, RenderTypes.getDefaultOutlineSolid());
 				map.put(Sheets.cutoutBlockSheet(), blockBuilders.builder(RenderType.cutout()));
 				map.put(Sheets.bannerSheet(), blockBuilders.builder(RenderType.cutoutMipped()));
 				map.put(Sheets.translucentCullBlockSheet(), blockBuilders.builder(RenderType.translucent()));

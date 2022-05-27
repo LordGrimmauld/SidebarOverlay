@@ -23,7 +23,7 @@ public class SuperByteBuffer {
 		rendered.order(ByteOrder.nativeOrder());
 		this.formatSize = buf.getVertexFormat().getVertexSize();
 		int size = state.getFirst().vertexCount() * this.formatSize;
-		this.template = MemoryTracker.createByteBuffer(size);
+		this.template = ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder());
 		this.template.order(rendered.order());
 		this.template.limit(rendered.limit());
 		this.template.put(rendered);

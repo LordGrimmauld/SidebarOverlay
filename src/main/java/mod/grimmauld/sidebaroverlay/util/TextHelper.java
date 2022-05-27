@@ -1,6 +1,6 @@
 package mod.grimmauld.sidebaroverlay.util;
 
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mod.grimmauld.sidebaroverlay.SidebarOverlay;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.chat.Component;

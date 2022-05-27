@@ -43,7 +43,7 @@ public abstract class Outline {
 	public void renderAACuboidLine(PoseStack ms, SuperRenderTypeBuffer buffer, Vec3 start, Vec3 end) {
 		float lineWidth = this.params.getLineWidth();
 		if (lineWidth != 0.0F) {
-			VertexConsumer builder = buffer.getBuffer(RenderTypes.getOutlineSolid());
+			VertexConsumer builder = buffer.getBuffer(RenderTypes.getDefaultOutlineSolid());
 			Vec3 diff = end.subtract(start);
 			Vec3 extension;
 			if (diff.x + diff.y + diff.z < 0.0D) {

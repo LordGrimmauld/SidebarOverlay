@@ -2,7 +2,7 @@ package mod.grimmauld.sidebaroverlay.api.overlay;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mod.grimmauld.sidebaroverlay.Manager;
 import mod.grimmauld.sidebaroverlay.api.Keyboard;
 import mod.grimmauld.sidebaroverlay.api.overlay.selection.SelectItem;
@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static mod.grimmauld.sidebaroverlay.Manager.*;
-import static net.minecraft.client.gui.AbstractGui.blit;
+import static net.minecraft.client.gui.GuiComponent.*;
 
-@Parametersnet.minecraft.client.gui.GuiComponentonnullByDefault
+@ParametersAreNonnullByDefault
 public class SelectOverlay {
 
 	private static final Minecraft MC = Minecraft.getInstance();
@@ -131,11 +131,11 @@ public class SelectOverlay {
 		ms.translate(sideways ? sidewaysShift : 0, sideways ? 0 : shift, 0);
 
 		RenderSystem.enableBlend();
-		RenderSystem.color4f(1, 1, 1, 3 / 4f);
+		RenderSystem.setShaderColor(1, 1, 1, 3 / 4f);
 
-		MC.getTextureManager().bind(ExtraTextures.GRAY.getLocation());
+		RenderSystem.setShaderTexture(0, ExtraTextures.GRAY.getLocation());
 		blit(ms, x, y, 0, 0, menuWidth, menuHeight, 16, 16);
-		RenderSystem.color4f(1, 1, 1, 1);
+		RenderSystem.setShaderColor(1, 1, 1, 1);
 
 		int yPos = y + 4;
 		int xPos = x + 4;
