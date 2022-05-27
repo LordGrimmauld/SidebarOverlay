@@ -1,6 +1,6 @@
 package mod.grimmauld.sidebaroverlay;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcp.MethodsReturnNonnullByDefault;
 import mod.grimmauld.sidebaroverlay.api.Keyboard;
 import mod.grimmauld.sidebaroverlay.api.overlay.SelectOverlay;
@@ -8,9 +8,9 @@ import mod.grimmauld.sidebaroverlay.api.overlay.selection.SelectItem;
 import mod.grimmauld.sidebaroverlay.render.SuperRenderTypeBuffer;
 import mod.grimmauld.sidebaroverlay.util.KeybindHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.Camera;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -43,16 +43,16 @@ public class Manager {
 	public static final Set<SelectOverlay> overlays = new HashSet<>();
 	public static final String IMC_ADD_OVERLAY_ENTRY = "addOverlayEntry";
 
-	public static KeyBinding TOOL_CONFIG;
-	public static KeyBinding TOOL_DEACTIVATE;
-	public static KeyBinding TOOL_SELECT;
-	public static KeyBinding TOOL_ACTIVATE;
+	public static KeyMapping TOOL_CONFIG;
+	public static KeyMapping TOOL_DEACTIVATE;
+	public static KeyMapping TOOL_SELECT;
+	public static KeyMapping TOOL_ACTIVATE;
 
 	public static void init(FMLClientSetupEvent event) {
-		TOOL_DEACTIVATE = new KeyBinding(translationKey("keybind.menu"), Keyboard.O.getKeycode(), SidebarOverlay.NAME);
-		TOOL_SELECT = new KeyBinding(translationKey("keybind.select_tool"), Keyboard.LALT.getKeycode(), SidebarOverlay.NAME);
-		TOOL_ACTIVATE = new KeyBinding(translationKey("keybind.activate_tool"), Keyboard.ENTER.getKeycode(), SidebarOverlay.NAME);
-		TOOL_CONFIG = new KeyBinding(translationKey("keybind.config"), Keyboard.CTRL.getKeycode(), SidebarOverlay.NAME);
+		TOOL_DEACTIVATE = new KeyMapping(translationKey("keybind.menu"), Keyboard.O.getKeycode(), SidebarOverlay.NAME);
+		TOOL_SELECT = new KeyMapping(translationKey("keybind.select_tool"), Keyboard.LALT.getKeycode(), SidebarOverlay.NAME);
+		TOOL_ACTIVATE = new KeyMapping(translationKey("keybind.activate_tool"), Keyboard.ENTER.getKeycode(), SidebarOverlay.NAME);
+		TOOL_CONFIG = new KeyMapping(translationKey("keybind.config"), Keyboard.CTRL.getKeycode(), SidebarOverlay.NAME);
 
 		ClientRegistry.registerKeyBinding(TOOL_DEACTIVATE);
 		ClientRegistry.registerKeyBinding(TOOL_SELECT);
@@ -144,9 +144,9 @@ public class Manager {
 
 	@SubscribeEvent
 	public static void onRenderWorld(RenderWorldLastEvent event) {
-		MatrixStack ms = event.getMatrixStack();
-		ActiveRenderInfo info = Minecraft.getInstance().gameRenderer.getMainCamera();
-		Vector3d view = info.getPosition();
+		PoseStack ms = event.getMatrixStack();
+		Camera info = Minecraft.getInstance().gameRenderer.getMainCamera();
+		Vec3 view = info.getPosition();
 		ms.pushPose();
 		ms.translate(-view.x(), -view.y(), -view.z());
 		SuperRenderTypeBuffer buffer = SuperRenderTypeBuffer.getInstance();

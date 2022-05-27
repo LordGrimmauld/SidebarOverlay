@@ -2,8 +2,8 @@ package mod.grimmauld.sidebaroverlay.api.overlay.selection.config;
 
 import mcp.MethodsReturnNonnullByDefault;
 import mod.grimmauld.sidebaroverlay.api.overlay.SelectOverlay;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -13,7 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BooleanSelectConfig extends NonNullSelectConfig<Boolean> {
 	private boolean value;
 
-	public BooleanSelectConfig(ITextComponent description, boolean defaultValue) {
+	public BooleanSelectConfig(Component description, boolean defaultValue) {
 		super(description);
 		this.value = defaultValue;
 	}
@@ -33,8 +33,8 @@ public class BooleanSelectConfig extends NonNullSelectConfig<Boolean> {
 
 	@Override
 	@Nonnull
-	protected ITextComponent getState() {
-		return new StringTextComponent(value ? "On" : "Off");
+	protected Component getState() {
+		return new TextComponent(value ? "On" : "Off");
 	}
 
 	@Override

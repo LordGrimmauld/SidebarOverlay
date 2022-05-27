@@ -1,11 +1,11 @@
 package mod.grimmauld.sidebaroverlay.api.overlay.selection.config;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nonnull;
 
 public abstract class NonNullSelectConfig<T extends Comparable<? super T>> extends SelectConfig<T> {
-	public NonNullSelectConfig(ITextComponent description) {
+	public NonNullSelectConfig(Component description) {
 		super(description);
 	}
 

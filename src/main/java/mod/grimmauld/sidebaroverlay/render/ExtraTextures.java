@@ -1,7 +1,7 @@
 package mod.grimmauld.sidebaroverlay.render;
 
 import mod.grimmauld.sidebaroverlay.SidebarOverlay;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
 

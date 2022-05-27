@@ -1,7 +1,7 @@
 package mod.grimmauld.sidebaroverlay.util.outline;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.grimmauld.sidebaroverlay.render.ExtraTextures;
 import mod.grimmauld.sidebaroverlay.render.RenderTypes;
 import mod.grimmauld.sidebaroverlay.render.SuperRenderTypeBuffer;
@@ -9,11 +9,11 @@ import mod.grimmauld.sidebaroverlay.util.AngleHelper;
 import mod.grimmauld.sidebaroverlay.util.ColorHelper;
 import mod.grimmauld.sidebaroverlay.util.VecHelper;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import com.mojang.math.Matrix3f;
+import net.minecraft.world.phys.Vec3;
+import com.mojang.math.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -25,27 +25,27 @@ public abstract class Outline {
 	public Outline() {
 	}
 
-	public abstract void render(MatrixStack var1, SuperRenderTypeBuffer var2);
+	public abstract void render(PoseStack var1, SuperRenderTypeBuffer var2);
 
-	public void renderCuboidLine(MatrixStack ms, SuperRenderTypeBuffer buffer, Vector3d start, Vector3d end) {
-		Vector3d diff = end.subtract(start);
-		float hAngle = AngleHelper.deg(MathHelper.atan2(diff.x, diff.z));
+	public void renderCuboidLine(PoseStack ms, SuperRenderTypeBuffer buffer, Vec3 start, Vec3 end) {
+		Vec3 diff = end.subtract(start);
+		float hAngle = AngleHelper.deg(Mth.atan2(diff.x, diff.z));
 		float hDistance = (float) diff.multiply(1.0D, 0.0D, 1.0D).length();
-		float vAngle = AngleHelper.deg(MathHelper.atan2(hDistance, diff.y)) - 90.0F;
+		float vAngle = AngleHelper.deg(Mth.atan2(hDistance, diff.y)) - 90.0F;
 		ms.pushPose();
 		ms.translate(start.x, start.y, start.z);
 		ms.mulPose(Vector3f.YP.rotationDegrees(hAngle));
 		ms.mulPose(Vector3f.XP.rotationDegrees(vAngle));
-		this.renderAACuboidLine(ms, buffer, Vector3d.ZERO, new Vector3d(0.0D, 0.0D, diff.length()));
+		this.renderAACuboidLine(ms, buffer, Vec3.ZERO, new Vec3(0.0D, 0.0D, diff.length()));
 		ms.popPose();
 	}
 
-	public void renderAACuboidLine(MatrixStack ms, SuperRenderTypeBuffer buffer, Vector3d start, Vector3d end) {
+	public void renderAACuboidLine(PoseStack ms, SuperRenderTypeBuffer buffer, Vec3 start, Vec3 end) {
 		float lineWidth = this.params.getLineWidth();
 		if (lineWidth != 0.0F) {
-			IVertexBuilder builder = buffer.getBuffer(RenderTypes.getOutlineSolid());
-			Vector3d diff = end.subtract(start);
-			Vector3d extension;
+			VertexConsumer builder = buffer.getBuffer(RenderTypes.getOutlineSolid());
+			Vec3 diff = end.subtract(start);
+			Vec3 extension;
 			if (diff.x + diff.y + diff.z < 0.0D) {
 				extension = start;
 				start = end;
@@ -54,23 +54,23 @@ public abstract class Outline {
 			}
 
 			extension = diff.normalize().scale(lineWidth / 2.0F);
-			Vector3d plane = VecHelper.axisAlingedPlaneOf(diff);
+			Vec3 plane = VecHelper.axisAlingedPlaneOf(diff);
 			Direction face = Direction.getNearest(diff.x, diff.y, diff.z);
 			Direction.Axis axis = face.getAxis();
 			start = start.subtract(extension);
 			end = end.add(extension);
 			plane = plane.scale(lineWidth / 2.0F);
-			Vector3d a1 = plane.add(start);
-			Vector3d b1 = plane.add(end);
+			Vec3 a1 = plane.add(start);
+			Vec3 b1 = plane.add(end);
 			plane = VecHelper.rotate(plane, -90.0D, axis);
-			Vector3d a2 = plane.add(start);
-			Vector3d b2 = plane.add(end);
+			Vec3 a2 = plane.add(start);
+			Vec3 b2 = plane.add(end);
 			plane = VecHelper.rotate(plane, -90.0D, axis);
-			Vector3d a3 = plane.add(start);
-			Vector3d b3 = plane.add(end);
+			Vec3 a3 = plane.add(start);
+			Vec3 b3 = plane.add(end);
 			plane = VecHelper.rotate(plane, -90.0D, axis);
-			Vector3d a4 = plane.add(start);
-			Vector3d b4 = plane.add(end);
+			Vec3 a4 = plane.add(start);
+			Vec3 b4 = plane.add(end);
 			if (this.params.disableNormals) {
 				face = Direction.UP;
 				this.putQuad(ms, builder, b4, b3, b2, b1, face);
@@ -81,7 +81,7 @@ public abstract class Outline {
 			} else {
 				this.putQuad(ms, builder, b4, b3, b2, b1, face);
 				this.putQuad(ms, builder, a1, a2, a3, a4, face.getOpposite());
-				Vector3d vec = a1.subtract(a4);
+				Vec3 vec = a1.subtract(a4);
 				face = Direction.getNearest(vec.x, vec.y, vec.z);
 				this.putQuad(ms, builder, a1, b1, b2, a2, face);
 				vec = VecHelper.rotate(vec, -90.0D, axis);
@@ -97,23 +97,23 @@ public abstract class Outline {
 		}
 	}
 
-	public void putQuad(MatrixStack ms, IVertexBuilder builder, Vector3d v1, Vector3d v2, Vector3d v3, Vector3d v4, Direction normal) {
+	public void putQuad(PoseStack ms, VertexConsumer builder, Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, Direction normal) {
 		this.putQuadUV(ms, builder, v1, v2, v3, v4, 0.0F, 0.0F, 1.0F, 1.0F, normal);
 	}
 
-	public void putQuadUV(MatrixStack ms, IVertexBuilder builder, Vector3d v1, Vector3d v2, Vector3d v3, Vector3d v4, float minU, float minV, float maxU, float maxV, Direction normal) {
+	public void putQuadUV(PoseStack ms, VertexConsumer builder, Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, float minU, float minV, float maxU, float maxV, Direction normal) {
 		this.putVertex(ms, builder, v1, minU, minV, normal);
 		this.putVertex(ms, builder, v2, maxU, minV, normal);
 		this.putVertex(ms, builder, v3, maxU, maxV, normal);
 		this.putVertex(ms, builder, v4, minU, maxV, normal);
 	}
 
-	protected void putVertex(MatrixStack ms, IVertexBuilder builder, Vector3d pos, float u, float v, Direction normal) {
+	protected void putVertex(PoseStack ms, VertexConsumer builder, Vec3 pos, float u, float v, Direction normal) {
 		int i = 15728880;
 		int j = i >> 16 & '\uffff';
 		int k = i & '\uffff';
-		MatrixStack.Entry peek = ms.last();
-		Vector3d rgb = this.params.rgb;
+		PoseStack.Pose peek = ms.last();
+		Vec3 rgb = this.params.rgb;
 		if (this.transformNormals == null) {
 			this.transformNormals = peek.normal();
 		}
@@ -147,7 +147,7 @@ public abstract class Outline {
 		protected boolean disableCull;
 		protected boolean disableNormals;
 		protected float alpha;
-		protected Vector3d rgb;
+		protected Vec3 rgb;
 		private float lineWidth;
 
 		public OutlineParams() {

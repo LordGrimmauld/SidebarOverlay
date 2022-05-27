@@ -1,8 +1,8 @@
 package mod.grimmauld.sidebaroverlay.api.overlay.selection.config;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -13,7 +13,7 @@ public class IntSelectConfig extends NonNullSelectConfig<Integer> {
 	private final int max;
 	private int value;
 
-	public IntSelectConfig(ITextComponent description, int min, int defaultValue, int max) {
+	public IntSelectConfig(Component description, int min, int defaultValue, int max) {
 		super(description);
 		this.min = min;
 		this.value = defaultValue;
@@ -23,7 +23,7 @@ public class IntSelectConfig extends NonNullSelectConfig<Integer> {
 
 	@Override
 	public void onScrolled(int amount) {
-		value = MathHelper.clamp(value + amount, min, max);
+		value = Mth.clamp(value + amount, min, max);
 		this.onValueChanged();
 	}
 

@@ -1,12 +1,12 @@
 package mod.grimmauld.sidebaroverlay.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector4f;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.platform.MemoryTracker;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector4f;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -15,7 +15,7 @@ public class SuperByteBuffer {
 	protected final ByteBuffer template;
 	protected final int formatSize;
 	final Vector4f pos = new Vector4f();
-	private MatrixStack transforms;
+	private PoseStack transforms;
 
 	public SuperByteBuffer(BufferBuilder buf) {
 		Pair<BufferBuilder.DrawState, ByteBuffer> state = buf.popNextBuffer();
@@ -23,15 +23,15 @@ public class SuperByteBuffer {
 		rendered.order(ByteOrder.nativeOrder());
 		this.formatSize = buf.getVertexFormat().getVertexSize();
 		int size = state.getFirst().vertexCount() * this.formatSize;
-		this.template = GLAllocation.createByteBuffer(size);
+		this.template = MemoryTracker.createByteBuffer(size);
 		this.template.order(rendered.order());
 		this.template.limit(rendered.limit());
 		this.template.put(rendered);
 		this.template.rewind();
-		this.transforms = new MatrixStack();
+		this.transforms = new PoseStack();
 	}
 
-	public void renderInto(MatrixStack input, IVertexBuilder builder) {
+	public void renderInto(PoseStack input, VertexConsumer builder) {
 		ByteBuffer buffer = this.template;
 		if (buffer.limit() != 0) {
 			buffer.rewind();
@@ -63,7 +63,7 @@ public class SuperByteBuffer {
 				builder.normal(this.getNX(buffer, i), this.getNY(buffer, i), this.getNZ(buffer, i)).endVertex();
 			}
 
-			this.transforms = new MatrixStack();
+			this.transforms = new PoseStack();
 		}
 	}
 

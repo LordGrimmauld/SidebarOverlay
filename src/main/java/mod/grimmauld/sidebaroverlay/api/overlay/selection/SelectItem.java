@@ -1,13 +1,13 @@
 package mod.grimmauld.sidebaroverlay.api.overlay.selection;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcp.MethodsReturnNonnullByDefault;
 import mod.grimmauld.sidebaroverlay.api.overlay.SelectOverlay;
 import mod.grimmauld.sidebaroverlay.render.SuperRenderTypeBuffer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
@@ -21,10 +21,10 @@ import java.util.function.Consumer;
 @MethodsReturnNonnullByDefault
 public class SelectItem {
 	protected static final Minecraft MC = Minecraft.getInstance();
-	private final ITextComponent description;
+	private final Component description;
 	private final Set<Consumer<RenderGameOverlayEvent.Pre>> renderExtraHooks;
 
-	public SelectItem(ITextComponent description) {
+	public SelectItem(Component description) {
 		this.description = description;
 		renderExtraHooks = new HashSet<>();
 	}
@@ -35,8 +35,8 @@ public class SelectItem {
 	public void onOverlayOpen() {
 	}
 
-	public IFormattableTextComponent getDescription() {
-		return description.copy().withStyle(TextFormatting.WHITE);
+	public MutableComponent getDescription() {
+		return description.copy().withStyle(ChatFormatting.WHITE);
 	}
 
 	public void onScroll(InputEvent.MouseScrollEvent event) {
@@ -45,10 +45,10 @@ public class SelectItem {
 	public void onRightClick(InputEvent.MouseInputEvent event) {
 	}
 
-	public void continuousRendering(MatrixStack ms, SuperRenderTypeBuffer buffer) {
+	public void continuousRendering(PoseStack ms, SuperRenderTypeBuffer buffer) {
 	}
 
-	public void renderActive(MatrixStack ms, SuperRenderTypeBuffer buffer) {
+	public void renderActive(PoseStack ms, SuperRenderTypeBuffer buffer) {
 	}
 
 	@SafeVarargs

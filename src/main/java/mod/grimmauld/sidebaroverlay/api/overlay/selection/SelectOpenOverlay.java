@@ -2,7 +2,7 @@ package mod.grimmauld.sidebaroverlay.api.overlay.selection;
 
 import mcp.MethodsReturnNonnullByDefault;
 import mod.grimmauld.sidebaroverlay.api.overlay.SelectOverlay;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -12,7 +12,7 @@ public class SelectOpenOverlay extends SelectItem {
 
 	private final SelectOverlay toOpen;
 
-	public SelectOpenOverlay(ITextComponent description, SelectOverlay toOpen) {
+	public SelectOpenOverlay(Component description, SelectOverlay toOpen) {
 		super(description);
 		this.toOpen = toOpen;
 	}

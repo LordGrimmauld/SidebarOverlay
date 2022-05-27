@@ -2,21 +2,21 @@ package mod.grimmauld.sidebaroverlay.api.overlay.selection.config;
 
 import mcp.MethodsReturnNonnullByDefault;
 import mod.grimmauld.sidebaroverlay.api.overlay.SelectOverlay;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ArraySelectConfig<T extends Comparable<? super T> & IStringSerializable> extends SelectConfig<T> {
+public class ArraySelectConfig<T extends Comparable<? super T> & StringRepresentable> extends SelectConfig<T> {
 	private final T[] values;
 	private int selected;
 
-	public ArraySelectConfig(T[] values, ITextComponent description) {
+	public ArraySelectConfig(T[] values, Component description) {
 		super(description);
 		this.values = values;
 		selected = 0;
@@ -44,10 +44,10 @@ public class ArraySelectConfig<T extends Comparable<? super T> & IStringSerializ
 	}
 
 	@Override
-	protected ITextComponent getState() {
+	protected Component getState() {
 		T value = getValue();
 		if (value == null)
-			return new StringTextComponent("none");
-		return new TranslationTextComponent(value.getSerializedName());
+			return new TextComponent("none");
+		return new TranslatableComponent(value.getSerializedName());
 	}
 }

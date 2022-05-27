@@ -1,17 +1,17 @@
 package mod.grimmauld.sidebaroverlay.api.overlay.selection.config;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcp.MethodsReturnNonnullByDefault;
 import mod.grimmauld.sidebaroverlay.api.overlay.SelectOverlay;
 import mod.grimmauld.sidebaroverlay.render.ExtraTextures;
 import mod.grimmauld.sidebaroverlay.render.SuperRenderTypeBuffer;
 import mod.grimmauld.sidebaroverlay.util.RaycastHelper;
 import mod.grimmauld.sidebaroverlay.util.outline.AABBOutline;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,13 +19,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class BlockPosSelectConfig extends SelectConfig<BlockPos> {
-	private final TextFormatting color;
+	private final ChatFormatting color;
 	@Nullable
 	private AABBOutline outline = null;
 	@Nullable
 	private BlockPos pos = null;
 
-	public BlockPosSelectConfig(ITextComponent description, TextFormatting color) {
+	public BlockPosSelectConfig(Component description, ChatFormatting color) {
 		super(description);
 		this.color = color;
 	}
@@ -47,8 +47,8 @@ public class BlockPosSelectConfig extends SelectConfig<BlockPos> {
 	}
 
 	@Override
-	protected ITextComponent getState() {
-		return new StringTextComponent(pos == null ? "undefined" : pos.getX() + " " + pos.getY() + " " + pos.getZ()).withStyle(color);
+	protected Component getState() {
+		return new TextComponent(pos == null ? "undefined" : pos.getX() + " " + pos.getY() + " " + pos.getZ()).withStyle(color);
 	}
 
 	@Override
@@ -58,12 +58,12 @@ public class BlockPosSelectConfig extends SelectConfig<BlockPos> {
 	}
 
 	@Override
-	public void continuousRendering(MatrixStack ms, SuperRenderTypeBuffer buffer) {
+	public void continuousRendering(PoseStack ms, SuperRenderTypeBuffer buffer) {
 		super.continuousRendering(ms, buffer);
 		if (pos == null)
 			return;
 		if (outline == null)
-			outline = new AABBOutline(new AxisAlignedBB(pos));
+			outline = new AABBOutline(new AABB(pos));
 		outline.getParams()
 			.colored(color.getColor() == null ? 11141290 : color.getColor())
 			.withFaceTexture(ExtraTextures.CHECKERED)

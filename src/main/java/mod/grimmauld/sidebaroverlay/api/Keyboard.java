@@ -1,7 +1,7 @@
 package mod.grimmauld.sidebaroverlay.api;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.InputMappings;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,7 +26,7 @@ public enum Keyboard {
 	}
 
 	public static boolean isKeyDown(int key) {
-		return InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key);
+		return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key);
 	}
 
 	public boolean isKeyDown() {

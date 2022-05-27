@@ -1,6 +1,6 @@
 package mod.grimmauld.sidebaroverlay.api.overlay;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mcp.MethodsReturnNonnullByDefault;
 import mod.grimmauld.sidebaroverlay.Manager;
@@ -9,12 +9,12 @@ import mod.grimmauld.sidebaroverlay.api.overlay.selection.SelectItem;
 import mod.grimmauld.sidebaroverlay.api.overlay.selection.config.SelectConfig;
 import mod.grimmauld.sidebaroverlay.render.ExtraTextures;
 import mod.grimmauld.sidebaroverlay.util.KeybindHelper;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
@@ -28,12 +28,11 @@ import java.util.Optional;
 import static mod.grimmauld.sidebaroverlay.Manager.*;
 import static net.minecraft.client.gui.AbstractGui.blit;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@Parametersnet.minecraft.client.gui.GuiComponentonnullByDefault
 public class SelectOverlay {
 
 	private static final Minecraft MC = Minecraft.getInstance();
-	private final ITextComponent title;
+	private final Component title;
 	public boolean canBeOpenedDirectly;
 	public List<SelectItem> options;
 	int menuWidth;
@@ -44,7 +43,7 @@ public class SelectOverlay {
 	private SelectOverlay previous;
 	private int selectedOptionIndex;
 
-	public SelectOverlay(ITextComponent titleIn) {
+	public SelectOverlay(Component titleIn) {
 		this.title = titleIn;
 		visible = false;
 		options = new ArrayList<>();
@@ -112,8 +111,8 @@ public class SelectOverlay {
 			draw(event.getMatrixStack(), event.getPartialTicks());
 	}
 
-	private void draw(MatrixStack ms, float partialTicks) {
-		MainWindow window = MC.getWindow();
+	private void draw(PoseStack ms, float partialTicks) {
+		Window window = MC.getWindow();
 
 		int x = window.getGuiScaledWidth() - menuWidth - 10;
 		int y = window.getGuiScaledHeight() - menuHeight;
@@ -141,7 +140,7 @@ public class SelectOverlay {
 		int yPos = y + 4;
 		int xPos = x + 4;
 
-		FontRenderer font = MC.font;
+		Font font = MC.font;
 
 		// TODO add Keybinds
 
@@ -155,9 +154,9 @@ public class SelectOverlay {
 		yPos += font.lineHeight;
 
 		for (int i = 0; i < options.size(); i++) {
-			IFormattableTextComponent desc = options.get(i).getDescription();
+			MutableComponent desc = options.get(i).getDescription();
 			if (i == selectedOptionIndex)
-				desc.withStyle(TextFormatting.UNDERLINE, TextFormatting.ITALIC);
+				desc.withStyle(ChatFormatting.UNDERLINE, ChatFormatting.ITALIC);
 			font.draw(ms, desc, xPos, yPos, menuWidth - 8);
 			yPos += font.lineHeight + 2;
 		}
